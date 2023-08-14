@@ -10,3 +10,9 @@ export interface City {
     lng: number;
   };
 }
+
+export interface Country {
+  country: string;
+  emoji: string;
+  id: number;
+}
