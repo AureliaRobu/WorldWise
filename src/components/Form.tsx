@@ -1,32 +1,39 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import styles from "./Form.module.css";
+import { useNavigate } from 'react-router-dom';
+import styles from './Form.module.css';
+import Button from './Button.tsx';
 
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
     .toUpperCase()
-    .split("")
+    .split('')
     .map((char) => 127397 + char.charCodeAt());
   return String.fromCodePoint(...codePoints);
 }
 
 function Form() {
-  const [cityName, setCityName] = useState("");
-  const [country, setCountry] = useState("");
+  const [cityName, setCityName] = useState('');
+  const [country, setCountry] = useState('');
   const [date, setDate] = useState(new Date());
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState('');
+
+  const navigate = useNavigate();
 
   return (
     <form className={styles.form}>
       <div className={styles.row}>
-        <label htmlFor="cityName">City name</label>
-        <input
-          id="cityName"
-          onChange={(e) => setCityName(e.target.value)}
-          value={cityName}
-        />
+        <label htmlFor="cityName">
+          City name
+          <input
+            id="cityName"
+            onChange={(e) => setCityName(e.target.value)}
+            value={cityName}
+          />
+        </label>
+
         {/* <span className={styles.flag}>{emoji}</span> */}
       </div>
 
@@ -49,8 +56,18 @@ function Form() {
       </div>
 
       <div className={styles.buttons}>
-        <button>Add</button>
-        <button>&larr; Back</button>
+        <Button onClick={() => {}} type="primary">
+          Add
+        </Button>
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(-1);
+          }}
+          type="back"
+        >
+          &larr; Back
+        </Button>
       </div>
     </form>
   );
