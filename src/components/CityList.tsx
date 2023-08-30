@@ -3,21 +3,18 @@ import { City } from '../interfaces/interfaces';
 import Spinner from './Spinner';
 import CityItem from './CityItem';
 import Message from './Message';
+import { useCities } from '../contexts/CitiesContext';
 
-interface CityListProps {
-  cities: City[];
-  isLoading: boolean;
-}
-
-function CityList({ cities, isLoading }: CityListProps) {
-  if (isLoading) return <Spinner />;
+function CityList() {
+  const { cities, loading } = useCities();
+  if (loading) return <Spinner />;
   if (!cities.length)
     return (
       <Message message="Add your first city by clicking on a city on the map" />
     );
   return (
     <ul className={styles.cityList}>
-      {cities.map((city) => (
+      {cities.map((city: City) => (
         <CityItem city={city} key={city.id} />
       ))}
     </ul>

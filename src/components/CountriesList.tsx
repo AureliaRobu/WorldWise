@@ -3,14 +3,11 @@ import { Country, City } from '../interfaces/interfaces';
 import Spinner from './Spinner';
 import Message from './Message';
 import CountryItem from './CountryItem';
+import { useCities } from '../contexts/CitiesContext';
 
-interface CountriesListProps {
-  cities: City[];
-  isLoading: boolean;
-}
-
-function CountriesList({ cities, isLoading }: CountriesListProps) {
-  if (isLoading) return <Spinner />;
+function CountriesList() {
+  const { cities, loading } = useCities();
+  if (loading) return <Spinner />;
   if (!cities.length)
     return (
       <Message message="Add your first city by clicking on a city on the map" />
