@@ -1,24 +1,71 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { useState } from 'react';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from 'react-leaflet';
+import { useEffect, useState } from 'react';
 import { LatLngTuple } from 'leaflet';
 import styles from './Map.module.css';
 import { useCities } from '../contexts/CitiesContext';
 import { City } from '../interfaces/interfaces';
+import useGeolocation from '../hooks/useGeolocation';
+import Button from './Button.tsx';
+
+function ChangeCenter({ position }: { position: LatLngTuple }) {
+  const map = useMap();
+  map.setView(position);
+  return null;
+}
+
+function DetectClick() {
+  const navigate = useNavigate();
+  useMapEvents({
+    click: (e) => {
+      navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+    },
+  });
+  return null;
+}
 
 function Map() {
   const [mapPosition, setMapPosition] = useState<LatLngTuple>([51.505, -0.09]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const lat = searchParams.get('lat');
-  const lng = searchParams.get('lng');
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const mapLat = Number(searchParams.get('lat'));
+  const mapLng = Number(searchParams.get('lng'));
   const { cities } = useCities();
+  const {
+    isLoading: isLoadingPosition,
+    position: geolocationPosition,
+    getPosition,
+  } = useGeolocation();
+
+  useEffect(
+    function () {
+      if (mapLng && mapLat) setMapPosition([mapLat, mapLng]);
+    },
+    [mapLat, mapLng]
+  );
+
+  useEffect(
+    function () {
+      if (geolocationPosition)
+        setMapPosition([geolocationPosition.lat, geolocationPosition.lng]);
+    },
+    [geolocationPosition]
+  );
   return (
-    <div className={styles.mapContainer} onClick={() => navigate('form')}>
+    <div className={styles.mapContainer}>
+      <Button onClick={getPosition} type="position">
+        {isLoadingPosition ? 'Loading ...' : 'Use your position'}
+      </Button>
       <MapContainer
         className={styles.map}
         center={mapPosition}
-        zoom={13}
+        zoom={6}
         scrollWheelZoom
       >
         <TileLayer
@@ -35,6 +82,8 @@ function Map() {
             </Popup>
           </Marker>
         ))}
+        <ChangeCenter position={mapPosition} />
+        <DetectClick />
       </MapContainer>
     </div>
   );
