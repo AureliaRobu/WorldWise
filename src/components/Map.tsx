@@ -14,6 +14,7 @@ import { useCities } from '../contexts/CitiesContext';
 import { City } from '../interfaces/interfaces';
 import useGeolocation from '../hooks/useGeolocation';
 import Button from './Button.tsx';
+import useUrlPosition from "../hooks/useUrlPosition.tsx";
 
 function ChangeCenter({ position }: { position: LatLngTuple }) {
   const map = useMap();
@@ -33,9 +34,7 @@ function DetectClick() {
 
 function Map() {
   const [mapPosition, setMapPosition] = useState<LatLngTuple>([51.505, -0.09]);
-  const [searchParams] = useSearchParams();
-  const mapLat = Number(searchParams.get('lat'));
-  const mapLng = Number(searchParams.get('lng'));
+  const [mapLat, mapLng] = useUrlPosition();
   const { cities } = useCities();
   const {
     isLoading: isLoadingPosition,
@@ -59,9 +58,11 @@ function Map() {
   );
   return (
     <div className={styles.mapContainer}>
-      <Button onClick={getPosition} type="position">
-        {isLoadingPosition ? 'Loading ...' : 'Use your position'}
-      </Button>
+      {!geolocationPosition && (
+        <Button onClick={getPosition} type="position">
+          {isLoadingPosition ? 'Loading ...' : 'Use your position'}
+        </Button>
+      )}
       <MapContainer
         className={styles.map}
         center={mapPosition}
