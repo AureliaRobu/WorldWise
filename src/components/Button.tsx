@@ -3,14 +3,14 @@ import styles from './Button.module.css';
 
 interface ButtonProps {
   children: string;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   type: string;
 }
 
 function Button({ children, onClick, type }: ButtonProps) {
   return (
     <button
-      type="button"
+      type="submit"
       className={`${styles.btn} ${styles[type]}`}
       onClick={onClick}
     >
