@@ -6,14 +6,14 @@ import styles from './Form.module.css';
 import Button from './Button';
 import ButtonBack from './ButtonBack';
 import useUrlPosition from '../hooks/useUrlPosition';
-import Message from './Message.tsx';
-import Spinner from './Spinner.tsx';
-import { City } from '../interfaces/interfaces.ts';
-import { useCities } from '../contexts/CitiesContext.tsx';
+import Message from './Message';
+import Spinner from './Spinner';
+import { City } from '../interfaces/interfaces';
+import { useCities } from '../contexts/CitiesContext';
 
 const BASE_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client';
 
-export function convertToEmoji(countryCode) {
+export function convertToEmoji(countryCode: string) {
   const codePoints = countryCode
     .toUpperCase()
     .split('')
